@@ -3,27 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"> 
     <title>Document</title>
 </head>
 <body>
-    <form method="POST" id="form" action="opublikuj.php">
-        Nazwa quizu:<input type="text" name="nazwaquizu"><br>
-        Pytanie 1:<input type="text" name="pytanie1"><br>
-        Odpowiedz 1:<input type="text" name="p1o1"><input type="checkbox" name="p1o1h1"><br>
-        Odpowiedz 2:<input type="text" name="p1o2"><input type="checkbox" name="p1o2h2"><br>
-        Odpowiedz 3:<input type="text" name="p1o3"><input type="checkbox" name="p1o3h3"><br>
-        Odpowiedz 4:<input type="text" name="p1o4"><input type="checkbox" name="p1o4h4"><br>
-        <textarea id="ilepytan" name="ilepytan" style="display:none;">1</textarea>
-    </form>
-    <button type="button" onclick="dodajwartosc()">Dodaj pytanie</button>
-    <input type="submit" form="form" value="Opublikuj"><br>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <div class="navbar-nav mr-auto">
+                    <a href="#" class="nav-link nav-item">Główna</a>
+                    <a href="#" class="nav-link nav-item active">Quizy</a>
+                    <a href="#" class="nav-link nav-item">Stwórz</a>
+                    <a href="#" class="nav-link nav-item">Konto</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-
-
+    <div class="container">
+        <div class="row mt-4">
+            <div class="text-center col-12">
+                <form method="POST" id="form" action="opublikuj.php">
+                    Nazwa quizu:<input type="text" id="nazwaquizu" name="nazwaquizu"><br>
+                    <textarea id="ilepytan" name="ilepytan" style="display:none;">1</textarea>
+                </form>
+                <div class="mt-3">
+                    <button class="btn btn-primary" type="button" onclick="dodajwartosc()">Dodaj pytanie</button>
+                    <button class="btn btn-primary" type="button" onclick="opublikuj()">Opublikuj</button><br>
+                    <div id="niedobrze" class="d-none">Któreś z pól jest puste lub któreś z pytań nie ma poprawnej odpowiedzi!</div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        var ilepytan=1;
+        var ilepytan=0;
+        dodajwartosc();
         function dodajwartosc(){
             ilepytan++;
+            const divek = document.createElement("div");
+            divek.setAttribute("id", "divek"+ilepytan);
+            divek.setAttribute("class","col-12 mt-3 text-center");
+            document.getElementById("form").appendChild(divek);
             document.getElementById("ilepytan").value=ilepytan;
             const inputpytanie=document.createElement("input");
             const labelek=document.createElement("label");
@@ -31,9 +54,10 @@
             const ber=document.createElement("br");
             inputpytanie.setAttribute("type","text");
             inputpytanie.setAttribute("name", "pytanie"+ilepytan);
-            document.getElementById("form").appendChild(labelek);
-            document.getElementById("form").appendChild(inputpytanie);
-            document.getElementById("form").appendChild(ber);
+            inputpytanie.setAttribute("id", "pytanie"+ilepytan);
+            document.getElementById("divek"+ilepytan).appendChild(labelek);
+            document.getElementById("divek"+ilepytan).appendChild(inputpytanie);
+            document.getElementById("divek"+ilepytan).appendChild(ber);
             var i=0;
             while(i<4){
                 const labelek=document.createElement("label");
@@ -42,17 +66,65 @@
                 const ber=document.createElement("br");
                 inputodpowiedz.setAttribute("type", "text");
                 inputodpowiedz.setAttribute("name","p"+ilepytan+"o"+(i+1));
+                inputodpowiedz.setAttribute("id","p"+ilepytan+"o"+(i+1));
                 const checkboxodpowiedz=document.createElement("input");
                 checkboxodpowiedz.setAttribute("type","checkbox");
+                checkboxodpowiedz.setAttribute("class","ml-2");
                 checkboxodpowiedz.setAttribute("name","p"+ilepytan+"o"+(i+1)+"h"+(i+1));
-                document.getElementById("form").appendChild(labelek);
-                document.getElementById("form").appendChild(inputodpowiedz);
-                document.getElementById("form").appendChild(checkboxodpowiedz);
-                document.getElementById("form").appendChild(ber);
+                checkboxodpowiedz.setAttribute("id","p"+ilepytan+"o"+(i+1)+"h"+(i+1));
+                document.getElementById("divek"+ilepytan).appendChild(labelek);
+                document.getElementById("divek"+ilepytan).appendChild(inputodpowiedz);
+                document.getElementById("divek"+ilepytan).appendChild(checkboxodpowiedz);
+                document.getElementById("divek"+ilepytan).appendChild(ber);
                 i++;
             }
         }
 
+        function opublikuj(){
+            var j=0;
+            var k=0;
+            var czypuste=true;
+            var pytaneczko="ee";
+            var checkboxprzytympytaniu=false;
+            if(document.getElementById("nazwaquizu").value == "" )
+            {
+                czypuste=false;
+            }
+            while(j<ilepytan){
+                if(document.getElementById("pytanie"+(j+1)).value == "")
+                {
+                    czypuste=false;
+                }
+                k=0;
+                checkboxprzytympytaniu=false;
+                while(k<4){
+                    if(document.getElementById("p"+(j+1)+"o"+(k+1)).value == ""){
+                        czypuste=false;
+                    }
+                    if(document.getElementById("p"+(j+1)+"o"+(k+1)+"h"+(k+1)).checked){
+                        checkboxprzytympytaniu=true;
+                    }
+                    k++;
+                }
+                if(checkboxprzytympytaniu==false){
+                    czypuste=false;
+                }
+                j++;
+            }
+            j=0;
+            if(czypuste==true)
+            {
+                document.getElementById("form").submit();
+            }
+            else{
+                document.getElementById("niedobrze").setAttribute("class", "");
+            }
+        }
+
     </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>   
+
 </body>
 </html>

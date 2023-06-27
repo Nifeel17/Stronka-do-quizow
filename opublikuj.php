@@ -34,7 +34,7 @@
         $ktoraodpowiedz=1;
         $ktorepytanie++;
     }
-
+    header("Location: index.php");
 
 
 
