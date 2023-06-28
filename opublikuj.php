@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(isset($_SESSION["nazwauzytkownika"])==false){
+header("zalogujsie.php");
+}
     $ilepytan=$_POST['ilepytan'];
     $nazwaquizu=$_POST['nazwaquizu'];
     $ktorepytanie=1;
